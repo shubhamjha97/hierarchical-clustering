@@ -53,7 +53,7 @@ class DivisiveClustering:
 		del self.clusters[orig_cluster_key]
 
 		# Calculate distances
-		within_cluster_dist={pt:np.mean(np.delete(self.dist_matrix[:, pt], (pt, splinter_element))) for pt in temp_orig_cluster}
+		within_cluster_dist={pt:np.mean(np.delete(self.dist_matrix[:, pt], [pt, splinter_element])) for pt in temp_orig_cluster}
 		dist_to_splinter={pt:self.dist_matrix[pt, splinter_element]  for pt in temp_orig_cluster}
 		dist_diff={pt:(within_cluster_dist[pt] - dist_to_splinter[pt]) for pt in temp_orig_cluster} # if +ve, move to splinter
 		
@@ -63,22 +63,26 @@ class DivisiveClustering:
 				temp_new_cluster.append(pt)
 				temp_orig_cluster.remove(pt)
 
+		dist_bw_clusters=np.mean(self.dist_matrix[np.ix_(temp_new_cluster, temp_orig_cluster)])
+
 		# Add temp clusters to cluster dict
 		if len(temp_orig_cluster)==1:
 			self.clusters[temp_orig_cluster[0]]=temp_orig_cluster
 			orig_cluster_key=temp_orig_cluster[0]
 		else:
+			self.last_index-=1
 			self.clusters[self.last_index]=temp_orig_cluster
 			orig_cluster_key=self.last_index
-			self.last_index-=1
+			
 
 		if len(temp_new_cluster)==1:
 			self.clusters[temp_new_cluster[0]]=temp_new_cluster
 			new_cluster_key=temp_new_cluster[0]
 		else:
+			self.last_index-=1
 			self.clusters[self.last_index]=temp_new_cluster
 			new_cluster_key=self.last_index
-			self.last_index-=1
+			
 
 		# Append to hierarchical clusters
 		self.hierarchical_clusters['iter_'+str(self.no_clusters)]=copy.deepcopy(self.clusters)
@@ -88,12 +92,18 @@ class DivisiveClustering:
 
 
 	def make_linkage_function(self, cluster_1, cluster_2, dist, len_cluster_2):
-		# print(cluster_1, cluster_2, dist, len_cluster_2)
+		print(cluster_1, cluster_2)
 		self.linkage_matrix[self.n-self.no_clusters-1, 0]=cluster_2
 		self.linkage_matrix[self.n-self.no_clusters-1, 1]=cluster_1
 		self.linkage_matrix[self.n-self.no_clusters-1, 2]=dist
 		self.linkage_matrix[self.n-self.no_clusters-1, 3]=len_cluster_2
-		print(self.linkage_matrix[self.n-self.no_clusters-1, :])
+		#print(self.linkage_matrix[self.n-self.no_clusters-1, :])
+
+	def sanity_check_linkage(self):
+		print(self.n)
+		for i in range(self.linkage_matrix.shape[0]):
+			if self.linkage_matrix[i, 0] >= self.n + i or self.linkage_matrix[i, 1] >=self. n + i:
+				print(i, self.linkage_matrix[i,:])
 
 	def termination(self):
 		for k, v in self.clusters.items():
@@ -110,11 +120,12 @@ class DivisiveClustering:
 			self.reassign(splinter_element, orig_cluster_key)
 			self.iters+=1
 		print('Clustering done!')
+		self.sanity_check_linkage()
 
 	def create_dendrogram(self):
 		np.savetxt('temp_matrix', self.linkage_matrix)
 		fig=plt.figure()
-		print(self.linkage_matrix)
+		# print(self.linkage_matrix)
 		dendrogram(self.linkage_matrix, orientation='top')
 		plt.show()
 		fig.savefig('dendrogram.png')
