@@ -8,7 +8,14 @@ import matplotlib.pyplot as plt
 import copy
 
 class DivisiveClustering:
+	'''
+	Class which implements the DIANA (Divisive Analysis) algorithm and provides an interface for using the implementation.
+	'''
 	def __init__(self):
+		'''
+		Initializer for the DivisiveClustering class.
+		This function initializes some important class variables.
+		'''
 		self.clusters={}
 		self.dist_matrix=None
 		self.mapping=None
@@ -19,6 +26,22 @@ class DivisiveClustering:
 		self.last_index=None
 
 	def initialize(self):
+		'''
+		Initializer for the DivisiveClustering class.
+
+		Parameters
+		----------
+		path : string
+		    path to file containinng transactions.
+		
+		Returns
+		----------
+		transactions : list
+			list containing all transactions. Each transaction is a list of
+			items present in that transaction.
+		items : list
+			list containing all the unique items.
+		'''
 		self.n=len(self.mapping)
 		self.last_index=2*self.n-2
 		self.i=0
@@ -26,6 +49,17 @@ class DivisiveClustering:
 		self.linkage_matrix=np.zeros([self.n-1, 4])
 
 	def splinter(self):
+		'''
+		This function finds the cluster with the largest diameter and finds the splinter element.
+
+		Returns
+		----------
+		splinter_element : list
+			list containing all transactions. Each transaction is a list of
+			items present in that transaction.
+		max_diameter_cluster : int
+			index of the cluster with the largest diameter. This is the cluster which will be split.
+		'''
 		cluster_diameters={k:(len(v)<1)*(-1)+(len(v)>1)*np.max(self.dist_matrix[np.ix_(v,v)]) for k,v in self.clusters.items()}
 		max_diameter_cluster=max(cluster_diameters, key=cluster_diameters.get)
 		avg_within_cluster_distances={pt:(np.sum(self.dist_matrix[np.ix_(self.clusters[max_diameter_cluster], [pt])])/(len(self.clusters[max_diameter_cluster])-1)) for pt in self.clusters[max_diameter_cluster]}
@@ -36,6 +70,22 @@ class DivisiveClustering:
 		return splinter_element, max_diameter_cluster, splinter_element_dist
 
 	def reassign(self, splinter_element, orig_cluster_key, splinter_element_dist):
+		'''
+		Initializer for the DivisiveClustering class.
+
+		Parameters
+		----------
+		path : string
+		    path to file containinng transactions.
+		
+		Returns
+		----------
+		transactions : list
+			list containing all transactions. Each transaction is a list of
+			items present in that transaction.
+		items : list
+			list containing all the unique items.
+		'''
 		# Create temp clusters
 		temp_new_cluster=[splinter_element]
 		self.clusters[orig_cluster_key].remove(splinter_element)
@@ -82,24 +132,72 @@ class DivisiveClustering:
 		self.make_linkage_function(new_cluster_key, orig_cluster_key, dist_bw_clusters, len(temp_new_cluster)+len(temp_orig_cluster))
 
 	def make_linkage_function(self, cluster_1, cluster_2, dist, len_cluster_2):
+		'''
+		Initializer for the DivisiveClustering class.
+
+		Parameters
+		----------
+		path : string
+		    path to file containinng transactions.
+		
+		Returns
+		----------
+		transactions : list
+			list containing all transactions. Each transaction is a list of
+			items present in that transaction.
+		items : list
+			list containing all the unique items.
+		'''
 		print(cluster_1, cluster_2, dist)
 		self.linkage_matrix[self.n-self.no_clusters-1, 0]=cluster_2
 		self.linkage_matrix[self.n-self.no_clusters-1, 1]=cluster_1
 		self.linkage_matrix[self.n-self.no_clusters-1, 2]=dist
 		self.linkage_matrix[self.n-self.no_clusters-1, 3]=len_cluster_2
 
-	def sanity_check_linkage(self):
-		for i in range(self.linkage_matrix.shape[0]):
-			if self.linkage_matrix[i, 0] >= self.n + i or self.linkage_matrix[i, 1] >=self. n + i:
-				print(i, self.linkage_matrix[i,:])
+	# def sanity_check_linkage(self):
+	# 	for i in range(self.linkage_matrix.shape[0]):
+	# 		if self.linkage_matrix[i, 0] >= self.n + i or self.linkage_matrix[i, 1] >=self. n + i:
+	# 			print(i, self.linkage_matrix[i,:])
 
 	def termination(self):
+		'''
+		Initializer for the DivisiveClustering class.
+
+		Parameters
+		----------
+		path : string
+		    path to file containinng transactions.
+		
+		Returns
+		----------
+		transactions : list
+			list containing all transactions. Each transaction is a list of
+			items present in that transaction.
+		items : list
+			list containing all the unique items.
+		'''
 		for k, v in self.clusters.items():
 			if len(v)>1:
 				return 0
 		return 1
 
 	def fit(self, dist_matrix, mapping):
+		'''
+		Initializer for the DivisiveClustering class.
+
+		Parameters
+		----------
+		path : string
+		    path to file containinng transactions.
+		
+		Returns
+		----------
+		transactions : list
+			list containing all transactions. Each transaction is a list of
+			items present in that transaction.
+		items : list
+			list containing all the unique items.
+		'''
 		self.dist_matrix=dist_matrix
 		self.mapping=mapping
 		self.initialize()
@@ -110,18 +208,45 @@ class DivisiveClustering:
 		self.sanity_check_linkage()
 
 	def create_dendrogram(self):
+		'''
+		Initializer for the DivisiveClustering class.
+
+		Parameters
+		----------
+		path : string
+		    path to file containinng transactions.
+		
+		Returns
+		----------
+		transactions : list
+			list containing all transactions. Each transaction is a list of
+			items present in that transaction.
+		items : list
+			list containing all the unique items.
+		'''
 		np.savetxt('temp_matrix', self.linkage_matrix)
 		fig=plt.figure()
 		dendrogram(self.linkage_matrix, orientation='top')
-		# start = 10000
-		# factor = 0.1
-		# for i in range(self.linkage_matrix.shape[0]):
-		# 	self.linkage_matrix[i, 2] *= start
-		# 	start *= factor
 		plt.show()
 		fig.savefig('dendrogram.png')
 
 def read_data():
+	'''
+	Initializer for the DivisiveClustering class.
+
+	Parameters
+	----------
+	path : string
+	    path to file containinng transactions.
+	
+	Returns
+	----------
+	transactions : list
+		list containing all transactions. Each transaction is a list of
+		items present in that transaction.
+	items : list
+		list containing all the unique items.
+	'''
 	dataDict={}
 	rawData=None
 	with open('data/data.txt', 'r') as f:
@@ -142,5 +267,4 @@ if __name__=='__main__':
 
 	model=DivisiveClustering()
 	model.fit(dist_matrix, mapping)
-	# print(model.hierarchical_clusters)
 	model.create_dendrogram()
