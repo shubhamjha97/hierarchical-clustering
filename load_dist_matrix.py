@@ -11,7 +11,7 @@ from time import time
 
 count=0
 def load_dist_matrix(data=None, k=None):
-	pickleFilePath = Path('data/simMat_2.pkl')
+	pickleFilePath = Path('data/simMat_3.pkl')
 	if pickleFilePath.is_file():
 		temp_file=open(pickleFilePath, 'rb')
 		return pickle.load(temp_file)
