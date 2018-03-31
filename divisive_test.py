@@ -9,7 +9,7 @@ from similarity import similarity
 from timing_wrapper import timeit
 from time import time
 import line_profiler
-from load_sim_matrix import load_similarity_matrix
+from load_dist_matrix import load_dist_matrix
 from scipy.cluster.hierarchy import dendrogram
 import matplotlib.pyplot as plt
 import copy
@@ -18,7 +18,7 @@ import copy
 class DivisiveClustering:
 	def __init__(self):
 		self.clusters={}
-		self.sim_matrix=None
+		self.dist_matrix=None
 		self.mapping=None
 		self.no_clusters=0
 		self.linkage_matrix=None
@@ -36,13 +36,11 @@ class DivisiveClustering:
 		self.linkage_matrix=np.zeros([self.n-1, 4])
 
 	def splinter(self):
-		cluster_diameters={k:(len(v)<1)*(-1)+(len(v)>1)*np.max(np.max(self.sim_matrix[np.ix_(v,v)], axis=1)) for k,v in self.clusters.items()}
+		cluster_diameters={k:(len(v)<1)*(-1)+(len(v)>1)*np.max(np.max(self.dist_matrix[np.ix_(v,v)], axis=1)) for k,v in self.clusters.items()}
 		max_diameter_cluster=max(cluster_diameters, key=cluster_diameters.get)
-		avg_within_cluster_distances={pt:np.mean(self.sim_matrix[:, pt]) for pt in self.clusters[max_diameter_cluster]}
+		avg_within_cluster_distances={pt:np.mean(self.dist_matrix[:, pt]) for pt in self.clusters[max_diameter_cluster]}
 		splinter_element=max(avg_within_cluster_distances, key=avg_within_cluster_distances.get)
-		# self.clusters[max_diameter_cluster].remove(splinter_element)
 		self.no_clusters+=1
-		# self.clusters[self.no_clusters]=[splinter_element]
 		return splinter_element, max_diameter_cluster
 
 	def reassign(self, splinter_element, orig_cluster_key):
@@ -55,8 +53,8 @@ class DivisiveClustering:
 		del self.clusters[orig_cluster_key]
 
 		# Calculate distances
-		within_cluster_dist={pt:np.mean(np.delete(self.sim_matrix[:, pt], (pt, splinter_element))) for pt in temp_orig_cluster}
-		dist_to_splinter={pt:self.sim_matrix[pt, splinter_element]  for pt in temp_orig_cluster}
+		within_cluster_dist={pt:np.mean(np.delete(self.dist_matrix[:, pt], (pt, splinter_element))) for pt in temp_orig_cluster}
+		dist_to_splinter={pt:self.dist_matrix[pt, splinter_element]  for pt in temp_orig_cluster}
 		dist_diff={pt:(within_cluster_dist[pt] - dist_to_splinter[pt]) for pt in temp_orig_cluster} # if +ve, move to splinter
 		
 		# Reassign points
@@ -66,13 +64,10 @@ class DivisiveClustering:
 				temp_orig_cluster.remove(pt)
 
 		# Add temp clusters to cluster dict
-
 		if len(temp_orig_cluster)==1:
-			# print(temp_orig_cluster[0])
 			self.clusters[temp_orig_cluster[0]]=temp_orig_cluster
 			orig_cluster_key=temp_orig_cluster[0]
 		else:
-			# print(self.last_index)
 			self.clusters[self.last_index]=temp_orig_cluster
 			orig_cluster_key=self.last_index
 			self.last_index-=1
@@ -88,9 +83,7 @@ class DivisiveClustering:
 		# Append to hierarchical clusters
 		self.hierarchical_clusters['iter_'+str(self.no_clusters)]=copy.deepcopy(self.clusters)
 
-		# Make the linkage function
-		# temp_print=2*self.n-self.no_clusters
-		# print(orig_cluster_key, new_cluster_key, temp_print, orig_cluster_key>temp_print or new_cluster_key>temp_print )#, 2*self.n-1-self.no_clusters in self.clusters.keys())
+		# Make the linkage function ############# DIST ###############
 		self.make_linkage_function(new_cluster_key, orig_cluster_key, 0, len(temp_new_cluster))
 
 
@@ -108,21 +101,19 @@ class DivisiveClustering:
 				return 0
 		return 1
 
-	def fit(self, sim_matrix, mapping):
-		self.sim_matrix=sim_matrix
+	def fit(self, dist_matrix, mapping):
+		self.dist_matrix=dist_matrix
 		self.mapping=mapping
 		self.initialize()
 		while not self.termination():
 			splinter_element, orig_cluster_key=self.splinter()
 			self.reassign(splinter_element, orig_cluster_key)
-			# print(self.iters)
 			self.iters+=1
 		print('Clustering done!')
 
 	def create_dendrogram(self):
 		np.savetxt('temp_matrix', self.linkage_matrix)
 		fig=plt.figure()
-		#self.linkage_matrix=self.linkage_matrix[self.linkage_matrix[:,3].argsort()]
 		print(self.linkage_matrix)
 		dendrogram(self.linkage_matrix, orientation='top')
 		plt.show()
@@ -146,9 +137,10 @@ def read_data():
 
 if __name__=='__main__':
 	data, mapping=read_data()
-	sim_matrix=np.random.random(size=[311,311])#load_similarity_matrix(data, mapping)
+	# dist_matrix=np.random.random(size=[311,311])
+	dist_matrix=load_dist_matrix(data, mapping)
 
 	model=DivisiveClustering()
-	model.fit(sim_matrix, mapping)
+	model.fit(dist_matrix, mapping)
 	# print(model.hierarchical_clusters)
 	model.create_dendrogram()

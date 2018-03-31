@@ -10,10 +10,13 @@ from timing_wrapper import timeit
 from time import time
 
 count=0
-def load_similarity_matrix(data=None, k=None):
-	ClusterCount=len(data)
+def load_dist_matrix(data=None, k=None):
 	pickleFilePath = Path('data/simMat_2.pkl')
+	if pickleFilePath.is_file():
+		temp_file=open(pickleFilePath, 'rb')
+		return pickle.load(temp_file)
 	if True:
+		ClusterCount=len(data)
 		count=0
 		pool=ThreadPool()
 		sim_matrix=np.ones([ClusterCount, ClusterCount])
@@ -28,3 +31,7 @@ def load_similarity_matrix(data=None, k=None):
 		pool.map(lambda x: fill_matrix(x), keys_list)
 		with open('sim_matrix_div.pkl', 'wb') as file:
 			pickle.dump(sim_matrix, file)
+
+if __name__=='__main__':
+	dist_matrix= load_dist_matrix()
+	print(dist_matrix.shape)
