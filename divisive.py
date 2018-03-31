@@ -25,6 +25,14 @@ class DivisiveClustering:
 		self.n=None
 		self.i=None
 		self.hierarchical_clusters={}
+		self.last_index=None
+
+	def initialize(self):
+		self.n=len(self.mapping)
+		self.last_index=self.n
+		self.i=0
+		self.clusters[self.last_index]=list(self.mapping.keys())
+		self.linkage_matrix=np.zeros([self.n-1, 4])
 
 	def splinter(self):
 		cluster_diameters={k:(len(v)<1)*(-1)+(len(v)>1)*np.max(np.max(self.sim_matrix[np.ix_(v,v)], axis=1)) for k,v in self.clusters.items()}
@@ -35,12 +43,6 @@ class DivisiveClustering:
 		self.no_clusters+=1
 		self.clusters[self.no_clusters]=[splinter_element]
 		return self.no_clusters, max_diameter_cluster
-
-	def initialize(self):
-		self.clusters[0]=list(self.mapping.keys())
-		self.n=len(self.mapping)
-		self.i=0
-		self.linkage_matrix=np.zeros([self.n-1, 4])
 
 	def reassign(self, new_cluster_key, orig_cluster_key):
 		splinter_element=self.clusters[new_cluster_key][0]
@@ -54,7 +56,6 @@ class DivisiveClustering:
 		self.hierarchical_clusters[self.no_clusters]=copy.deepcopy(self.clusters)
 		new_cluster_elements=self.clusters[new_cluster_key]
 		orig_cluster_elements=self.clusters[orig_cluster_key]
-		print(orig_cluster_key, new_cluster_key)
 		temp_cluster_size=len(self.clusters[new_cluster_key])
 		if len(new_cluster_elements)==1:
 			new_cluster_key=self.no_clusters
