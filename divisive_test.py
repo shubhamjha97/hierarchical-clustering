@@ -91,13 +91,14 @@ class DivisiveClustering:
 		dist_to_splinter={pt:self.dist_matrix[pt, splinter_element]  for pt in temp_orig_cluster}
 		dist_diff={pt:(within_cluster_dist[pt] - dist_to_splinter[pt]) for pt in temp_orig_cluster} # if +ve, move to splinter
 		
+		to_remove_from_orig=[]
 		# Reassign points
 		for pt in temp_orig_cluster:
-			if dist_diff[pt]>=0 and len(temp_orig_cluster)>1:
+			if dist_diff[pt]>0 and len(temp_orig_cluster)>1:
 				temp_new_cluster.append(pt)
 				temp_orig_cluster.remove(pt)
-
-		dist_bw_clusters=np.mean(self.dist_matrix[np.ix_(temp_orig_cluster, temp_new_cluster)])
+		
+		dist_bw_clusters=np.max(self.dist_matrix[np.ix_(temp_orig_cluster, temp_new_cluster)])
 		
 		# Add temp clusters to cluster dict
 		if len(temp_orig_cluster)==1:
@@ -136,7 +137,6 @@ class DivisiveClustering:
 		    distance between the newly formed clusters.
 		len_cluster_2 : string
 		    number of elements in the original cluster which was later split.
-
 		'''
 		self.linkage_matrix[self.n-self.no_clusters-1, 0]=cluster_2
 		self.linkage_matrix[self.n-self.no_clusters-1, 1]=cluster_1
