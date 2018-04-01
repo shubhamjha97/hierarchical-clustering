@@ -1022,132 +1022,68 @@ body .markdown-body
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#data">Data</a></li>
 <li><a href="#instructions-to-run-the-scripts">Instructions to run the scripts</a><ul>
-<li><a href="#create-the-train-matrix-and-the-mappings">Create the train matrix and the mappings</a></li>
+<li><a href="#divisive-clustering">Divisive clustering</a></li>
+<li><a href="#agglomerative-clustering">Agglomerative clustering</a></li>
 </ul>
 </li>
-<li><a href="#important-variables">Important variables</a></li>
-<li><a href="#hash-function">Hash Function</a></li>
 <li><a href="#equations-used">Equations used</a></li>
 <li><a href="#pre-processing-done">Pre-processing done</a></li>
-<li><a href="#directory-structure-">Directory Structure:</a></li>
-<li><a href="#prescribed-format-of-output">Prescribed format of output</a><ul>
-<li><a href="#association-rules">Association Rules</a></li>
-<li><a href="#frequent-itemsets">Frequent itemsets</a></li>
-</ul>
-</li>
-<li><a href="#machine-specs-">Machine specs</a></li>
+<li><a href="#machine-specs">Machine specs</a></li>
 <li><a href="#results">Results</a></li>
-<li><a href="#members">Members</a></li>
+<li><a href="#agglomerative">Agglomerative</a></li>
+<li><a href="#divisive">Divisive</a></li>
+<li><a href="#group-members">Group Members</a></li>
 </ul>
 <p><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
 <h2 id="introduction"><a name="user-content-introduction" href="#introduction" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Introduction</h2>
 <p>Hierarchical clustering is a method of cluster analysis which seeks to build a hierarchy of clusters. Strategies for hierarchical clustering generally fall into two types:</p>
 <ol>
 <li>
-<p>Agglomerative: This is a &ldquo;bottom up&rdquo; approach: each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy.</p>
+<p><strong>Agglomerative</strong>: This is a &ldquo;bottom up&rdquo; approach: each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy.</p>
 </li>
 <li>
-<p>Divisive: This is a &ldquo;top down&rdquo; approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy.</p>
+<p><strong>Divisive</strong>: This is a &ldquo;top down&rdquo; approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy.</p>
 </li>
 </ol>
 <p>In general, the merges and splits are determined in a greedy manner. The results of hierarchical clustering are usually presented in a dendrogram.</p>
-<p><strong>The main purpose of this project is to get an in depth understanding of how the Apriori algorithm works.</strong><br />
-We implemented support counting using hash trees. The difference between out approach is significant as demonstrated by the following run times (we used the same value of <code>MINSUP</code> and <code>MIN_CONF</code> for both) -</p>
-<p>Support counting using brute force- <code>22.5s</code></p>
-<p>Support counting using hash tree- <code>5.9s</code></p>
-<p><em>For the sake of comparison, we have left in the code for the brute force method commented. Please feel free to uncomment it and try it out.</em></p>
-<p><em>More on <a href="https://en.wikipedia.org/wiki/Association_rule_learning">Association rule learning</a></em></p>
+<p><strong>The main purpose of this project is to get an in depth understanding of how the Divisive and Agglomerative hierarchical clustering algorithms work.</strong></p>
+<p><em>More on <a href="https://en.wikipedia.org/wiki/Hierarchical_clustering">Hierarchical clustering</a></em></p>
 <h2 id="data"><a name="user-content-data" href="#data" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Data</h2>
-<p>We used the <strong>Groceries Market Basket Dataset</strong>, which can be found <a href="http://www.sci.csueastbay.edu/~esuess/classes/Statistics_6620/Presentations/ml13/groceries.csv">here</a>. The dataset contains <strong>9835 transactions</strong> by customers shopping for groceries. The data contains <strong>169 unique items</strong>. The data can be found in the folder <strong>&lsquo;data&rsquo;</strong>.</p>
+<p>We used the <strong>Human Gene DNA Sequence</strong> dataset, which can be found <a href="http://genome.crg.es/datasets/ggalhsapgenes2005/hg16.311.putative.cds.fa">here</a>. The dataset contains <strong>311 gene sequences</strong>. The data can be found in the folder <strong>&lsquo;data&rsquo;</strong>.</p>
 <h2 id="instructions-to-run-the-scripts"><a name="user-content-instructions-to-run-the-scripts" href="#instructions-to-run-the-scripts" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Instructions to run the scripts</h2>
 <p>Run the following command:</p>
-<h5 id="create-the-train-matrix-and-the-mappings"><a name="user-content-create-the-train-matrix-and-the-mappings" href="#create-the-train-matrix-and-the-mappings" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Create the train matrix and the mappings</h5>
-<pre><code class="python">python arm.py
+<h5 id="divisive-clustering"><a name="user-content-divisive-clustering" href="#divisive-clustering" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Divisive clustering</h5>
+<pre><code class="python">python divisive.py
 </code></pre>
 
-<h2 id="important-variables"><a name="user-content-important-variables" href="#important-variables" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Important variables</h2>
-<pre><code>MINSUP - Minimum support
-HASH_DENOMINATOR - Denominator for the hash function (For support counting using hash tree)
-MIN_CONF - Minimum confidence
+<h5 id="agglomerative-clustering"><a name="user-content-agglomerative-clustering" href="#agglomerative-clustering" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Agglomerative clustering</h5>
+<pre><code class="python">python agglomerative.py
 </code></pre>
 
-<h2 id="hash-function"><a name="user-content-hash-function" href="#hash-function" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Hash Function</h2>
-<p>We have used hash function of the followinng format-<br />
-<code>x(mod)k</code><br />
-where k is chosen by the user.</p>
 <h2 id="equations-used"><a name="user-content-equations-used" href="#equations-used" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Equations used</h2>
-<pre><code>confidence(X-&gt;Y) = support(X U Y) / support(X)
-support(X, Y) = support count(X, Y) / total dataset size
-</code></pre>
-
+<p><pre><code>Maximum or complete-linkage clustering -&gt; Max(d(a,b))
+Minimum or single-linkage clustering -&gt; Min(d(a,b))
+Mean or average linkage clustering -&gt; sum of all d(a,b)/(|A|+|B|)
+Diameter of a cluster -&gt; Max(d(x,y))
+</code></pre><br />
+<em>where x, y are points in the same cluster and, a belongs to A, b belongs to B.</em></p>
 <h2 id="pre-processing-done"><a name="user-content-pre-processing-done" href="#pre-processing-done" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Pre-processing done</h2>
-<p>The csv file was read transaction by transaction and each transaction was saved as a list.<br />
-A mapping was created from the unique items in the dataset to integers so that each item corresponded to a unique integer.<br />
-The entire data was mapped to integers to reduce the storage and computational requirement.<br />
-A reverse mapping was created from the integers to the items, so that the item names could be written in the final output file.</p>
-<h2 id="directory-structure"><a name="user-content-directory-structure" href="#directory-structure" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Directory Structure</h2>
-<pre><code>association-rule-mining-apriori/
-+-- data
-|   +-- groceries.csv (original data file containing transactions)
-+--  arm.py(python script to read the data, mine frequent itemsets and interesting rules)
-+--  hash_tree.py(python file containing the Tree and Node classes used to build the hash tree for support counting)
-+--  timing_wrapper.py(python decorator used to measure execution time of functions)
-+--  l_final.pkl(all the frequent itemsets in pickled format)
-+--  outputs(destination to save the outputs generated)
-|   +-- frequent_itemsets.txt(all the frequent itemsets presented in the prescribed format)
-|   +-- association_rules.txt(all the interesting association rules mined and presented in the prescribed format)
-+--  results(folder containing the results of this project)
-+--  reverse_map.pkl(mapping from items to index in pickled format)
-+--  requirements.txt
-</code></pre>
-
-<h2 id="prescribed-format-of-output"><a name="user-content-prescribed-format-of-output" href="#prescribed-format-of-output" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Prescribed format of output</h2>
-<h5 id="association-rules"><a name="user-content-association-rules" href="#association-rules" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Association Rules</h5>
-<pre><code>Precedent (itemset (support count)) ---&gt; Antecedent (itemset (support count)) - confidence value
-</code></pre>
-
-<h5 id="frequent-itemsets"><a name="user-content-frequent-itemsets" href="#frequent-itemsets" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Frequent itemsets</h5>
-<pre><code>Frequent itemset (support count)
-</code></pre>
-
+<p>The file was read sequence by sequence and was saved in the form of a dictionary, where the key is the gene sequence&rsquo;s name and the value contains the entire gene string.</p>
+<p>A mapping was created from the unique gene sequences in the dataset to integers so that each sequence corresponded to a unique integer.</p>
+<p>The entire data was mapped to integers to reduce the storage and computational requirement.</p>
 <h2 id="machine-specs"><a name="user-content-machine-specs" href="#machine-specs" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Machine specs</h2>
 <p>Processor: i7-7500U</p>
 <p>Ram: 16 GB DDR4</p>
 <p>OS: Ubuntu 16.04 LTS</p>
 <h2 id="results"><a name="user-content-results" href="#results" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Results</h2>
-<table>
-<thead>
-<tr>
-<th>Confidence/Support</th>
-<th>No. of itemsets</th>
-<th>No of rules</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>High confidence(MIN_CONF=0.5) High support count(MINSUP=60)</td>
-<td>725</td>
-<td>60</td>
-</tr>
-<tr>
-<td>Low confidence(MIN_CONF=0.1) High support count(MINSUP=60)</td>
-<td>725</td>
-<td>1189</td>
-</tr>
-<tr>
-<td>High confidence(MIN_CONF=0.5) Low support count(MINSUP=10)</td>
-<td>11390</td>
-<td>4187</td>
-</tr>
-<tr>
-<td>Low confidence(MIN_CONF=0.1) Low support count(MINSUP=10)</td>
-<td>11390</td>
-<td>35196</td>
-</tr>
-</tbody>
-</table>
-<p>All the frequent itemsets and rules generated using the above mentioned configurations can be found in the &lsquo;results&rsquo; folder.</p>
-<h2 id="members"><a name="user-content-members" href="#members" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Members</h2>
+<p>CLustering was performed using the agglomerative and divisive methods and the following dendrograms were obtained-</p>
+<h3 id="agglomerative"><a name="user-content-agglomerative" href="#agglomerative" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Agglomerative</h3>
+<p><img alt="Agglomerative-Centroid" src="///C://Users/Shubham/Documents/Shubham/Projects/data_mining/Results/Centroid.png" title="Centroid" /><br />
+<img alt="Agglomerative-Max" src="///C://Users/Shubham/Documents/Shubham/Projects/data_mining/Results/Max.png" title="Max" /><br />
+<img alt="Agglomerative-Min" src="///C://Users/Shubham/Documents/Shubham/Projects/data_mining/Results/Min.png" title="Min" /></p>
+<h3 id="divisive"><a name="user-content-divisive" href="#divisive" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Divisive</h3>
+<p><img alt="Divisive" src="///C://Users/Shubham/Documents/Shubham/Projects/data_mining/Results/dendrogram_divisive.png" title="Divisive" /></p>
+<h2 id="group-members"><a name="user-content-group-members" href="#group-members" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Group Members</h2>
 <p><a href="http://github.com/shubhamjha97">Shubham Jha</a></p>
 <p><a href="http://github.com/praneetmehta">Praneet Mehta</a></p>
 <p><a href="http://github.com/abhinav1112">Abhinav Jain</a></p></article></body></html>

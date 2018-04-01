@@ -87,11 +87,9 @@ class DivisiveClustering:
 
 		# Calculate distances
 		within_cluster_dist={pt:np.mean(self.dist_matrix[np.ix_(temp_orig_cluster,[pt])]) for pt in temp_orig_cluster }
-		######### CHECK
 		dist_to_splinter={pt:self.dist_matrix[pt, splinter_element]  for pt in temp_orig_cluster}
 		dist_diff={pt:(within_cluster_dist[pt] - dist_to_splinter[pt]) for pt in temp_orig_cluster} # if +ve, move to splinter
 		
-		to_remove_from_orig=[]
 		# Reassign points
 		for pt in temp_orig_cluster:
 			if dist_diff[pt]>0 and len(temp_orig_cluster)>1:
@@ -120,7 +118,7 @@ class DivisiveClustering:
 		# Append to hierarchical clusters
 		self.hierarchical_clusters['iter_'+str(self.no_clusters)]=copy.deepcopy(self.clusters)
 
-		# Make the linkage function ############# DIST ###############
+		# Make the linkage function
 		self.make_linkage_function(new_cluster_key, orig_cluster_key, dist_bw_clusters, len(temp_new_cluster)+len(temp_orig_cluster))
 
 	def make_linkage_function(self, cluster_1, cluster_2, dist, len_cluster_2):
@@ -181,14 +179,14 @@ class DivisiveClustering:
 		'''
 		Function to create the dendrogram using the linakge matrix and save it to file.
 		'''
-		np.savetxt('temp_matrix', self.linkage_matrix)
-		fig=plt.figure()
+		fig=plt.figure(figsize=(18, 8))
+		plt.title("Dendrogram - Divisive Clustering")
 		labels=['temp']*len(self.mapping)
 		for idx,label in self.mapping.items():
 			labels[idx]=label
 		labels=np.array(labels)
 		dendrogram(self.linkage_matrix, orientation='top', labels=labels)
-		fig.savefig('dendrogram.png')
+		fig.savefig('dendrogram_divisive.png')
 		plt.show()
 
 def read_data():
