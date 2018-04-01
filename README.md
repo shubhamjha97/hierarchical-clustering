@@ -5,59 +5,38 @@ Course Assignment for CS F415- Data Mining @ BITS Pilani, Hyderabad Campus.
 **Done under the guidance of Dr. Aruna Malapati, Assistant Professor, BITS Pilani, Hyderabad Campus.**
 
 ## Table of contents
-* [Introduction](#introduction)
-* [Data](#data)
-* [Instructions to run the scripts](#instructions-to-run-the-scripts)
-    * [Create the train matrix and the mappings](#create-the-train-matrix-and-the-mappings)
-* [Important variables](#important-variables)
-* [Hash Function](#hash-function)
-* [Equations used](#equations-used)
-* [Pre-processing done](#pre-processing-done)
-* [Directory Structure:](#directory-structure-)
-* [Prescribed format of output](#prescribed-format-of-output)
-    * [Association Rules](#association-rules)
-    * [Frequent itemsets](#frequent-itemsets)
-* [Machine specs](#machine-specs-)
-* [Results](#results)
-* [Members](#members)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## Introduction
-Association rules mining is a rule-based method for discovering interesting relations between variables in large databases. It is intended to identify strong rules discovered in databases using some measures of interestingness. We used confidence as a measure of interestingness.
-**The main purpose of this project is to get an in depth understanding of how the Apriori algorithm works.**
-We implemented support counting using hash trees. The difference between out approach is significant as demonstrated by the following run times (we used the same value of ```MINSUP``` and ```MIN_CONF``` for both) -
+Hierarchical clustering is a method of cluster analysis which seeks to build a hierarchy of clusters. Strategies for hierarchical clustering generally fall into two types:
 
-Support counting using brute force- ```22.5s```
+1. Agglomerative: This is a "bottom up" approach: each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy.
 
-Support counting using hash tree- ```5.9s ```
+2. Divisive: This is a "top down" approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy.
 
-*For the sake of comparison, we have left in the code for the brute force method commented. Please feel free to uncomment it and try it out.*
+In general, the merges and splits are determined in a greedy manner. The results of hierarchical clustering are usually presented in a dendrogram.
 
-*More on [Association rule learning](https://en.wikipedia.org/wiki/Association_rule_learning)*
+
+**The main purpose of this project is to get an in depth understanding of how the Divisive and Agglomerative hierarchical clustering algorithms work.**
+
+*More on [Hierarchical clustering](https://en.wikipedia.org/wiki/Hierarchical_clustering)*
 
 ## Data
-We used the **Groceries Market Basket Dataset**, which can be found [here](http://www.sci.csueastbay.edu/~esuess/classes/Statistics_6620/Presentations/ml13/groceries.csv). The dataset contains **9835 transactions** by customers shopping for groceries. The data contains **169 unique items**. The data can be found in the folder **'data'**.
+We used the **Human Gene DNA Sequence** dataset, which can be found [here](http://genome.crg.es/datasets/ggalhsapgenes2005/hg16.311.putative.cds.fa). The dataset contains **311 gene sequences**. The data can be found in the folder **'data'**.
 
 ## Instructions to run the scripts
 Run the following command:
 
-##### Create the train matrix and the mappings
+##### Divisive clustering
 ```python
-python arm.py
+python divisive.py
 ```
 
-## Important variables
-```
-MINSUP - Minimum support
-HASH_DENOMINATOR - Denominator for the hash function (For support counting using hash tree)
-MIN_CONF - Minimum confidence
+##### Agglomerative clustering
+```python
+python agglomerative.py
 ```
 
-## Hash Function
-We have used hash function of the followinng format-
-```x(mod)k```
-where k is chosen by the user.
 
 ## Equations used
 ```
@@ -67,10 +46,11 @@ support(X, Y) = support count(X, Y) / total dataset size
 
 
 ## Pre-processing done
-The csv file was read transaction by transaction and each transaction was saved as a list.
-A mapping was created from the unique items in the dataset to integers so that each item corresponded to a unique integer.
+The csv file was read sequence by sequence and was saved in the form of a dictionary, where the key is the gene sequence's name and the value contains the enyire gene string.
+
+A mapping was created from the unique gene sequences in the dataset to integers so that each sequence corresponded to a unique integer.
+
 The entire data was mapped to integers to reduce the storage and computational requirement.
-A reverse mapping was created from the integers to the items, so that the item names could be written in the final output file.
 
 ## Directory Structure
 ```
@@ -88,18 +68,6 @@ association-rule-mining-apriori/
 +--  reverse_map.pkl(mapping from items to index in pickled format)
 +--  requirements.txt
 ```
-
-## Prescribed format of output
-##### Association Rules
-```
-Precedent (itemset (support count)) ---> Antecedent (itemset (support count)) - confidence value
-```
-
-##### Frequent itemsets
-```
-Frequent itemset (support count)
-```
-
 
 ## Machine specs
 Processor: i7-7500U
