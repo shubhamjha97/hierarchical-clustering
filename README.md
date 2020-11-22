@@ -1,4 +1,4 @@
-# Agglomerative and Divisive Hierarchical CLustering
+# Agglomerative and Divisive Hierarchical Clustering
 
 Course Assignment for CS F415- Data Mining @ BITS Pilani, Hyderabad Campus.
 
